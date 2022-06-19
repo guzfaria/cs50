@@ -1,0 +1,51 @@
+#include <cs50.h>
+#include <stdio.h>
+#include <math.h>
+
+int main(void)
+{
+    // Pega o valor de n com o usuário
+    float troco;
+    do
+    {
+        troco = get_float("Troco: ");
+    }
+    while (troco < 0 );
+    
+    int centavos = round(troco * 100);
+    
+    int moedas = 0; //iniciando a contagem das moedas
+
+    while(centavos >= 25)
+    {
+        moedas = moedas + 1; 
+        centavos = centavos - 25;
+    
+    }
+    
+    while(centavos >= 10)
+    {
+        moedas = moedas + 1; 
+        centavos = centavos - 10;
+    
+    }
+    
+    while(centavos >= 5)
+    {
+        moedas = moedas + 1; 
+        centavos = centavos - 5;
+    
+    }
+    
+    while(centavos >= 1)
+    {
+        moedas = moedas + 1; 
+        centavos = centavos - 1;
+    
+    } 
+        
+        printf("%i\n", moedas);
+    
+        printf("%i\n", centavos);
+    
+}
