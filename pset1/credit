@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include<cs50.h>
+
+long potencia(long valor, int exp);
+string scaneiaBandeira(long cartao);
+int verificaLength(string bandeira);
+int realizaSoma(long cartao, int length);
+
+int main(void){
+    //inicializa váriaveis
+    int soma = 0;
+    int length = 0;
+    string bandeira = "INVALID\n";
+    long cartao = get_long("Informe o seu cartão: ");  //solicita cartao
+    bandeira = scaneiaBandeira(cartao); //Descobre qual a bandeira
+    length = verificaLength(bandeira); //Descobre o length
+
+    if (length == 13){
+        bandeira = "VISA\n";
+    }
+    soma = realizaSoma(cartao, length);  //realiza calculos
+    if(soma%10 != 0){ //verifica se soma está correta
+        bandeira = "INVALID\n";
+    }
+    printf("%s", bandeira); //printa resultado
+}
+
+string scaneiaBandeira(long cartao){
+     long gig; // número gigante que eu não quero repetir
+
+    if(cartao % (potencia(10, 13)) == cartao){// 13 dígitos
+        if((cartao - (cartao % potencia(10, 12)))/1000000000000 == 4){
+            return "VISA\n";
+        }
+    }else if(cartao % potencia(10, 15) == cartao){// 15 dígitos
+         if((cartao - (cartao % potencia(10, 13)))/potencia(10, 13) == 34 ||
+            (cartao - (cartao % potencia(10, 13)))/potencia(10, 13) == 37  ){
+            return "AMEX\n";
+         }
+    }else if(cartao % potencia(10, 16) == cartao){// 16 dígitos
+        gig = potencia(10, 14);
+        if((cartao - (cartao % gig))/gig >= 51 && (cartao - (cartao % gig))/gig <= 55){
+            return "MASTERCARD\n";
+        }else if((cartao - (cartao % (gig*10)))/(gig*10) == 4){
+            return "VISA\n";
+        }
+    }
+        return "INVALID\n";
+}
+int verificaLength(string bandeira){
+    if(bandeira[0] == '1'){
+        return 13;
+    }else if(bandeira[0] == 'M'){
+        return 16;
+    }else if(bandeira[0] == 'A'){
+        return 15;
+    }else if(bandeira[0] == 'V'){
+        return 16;
+    }
+    return 0;
+}
+int realizaSoma(long cartao, int length){
+        int temp = 0;
+        int soma = 0;
+
+    for(long i = 0, j=100; i < length; i+=2){ //loop que soma e multiplica primeira metade dos números
+        temp = (((cartao%j)-(cartao%(j/10)))/(j/10))*2;
+        if(temp>=10){
+            temp = temp%10 + ((temp-(temp%10))/10);
+        }
+        soma += temp;
+        j = j*100;
+    }
+        printf("%d\n", soma);
+    for(long i = 0, j=10; i < length; i+=2){ //loop que soma segunda metade dos números
+        soma += (((cartao%j)-(cartao%(j/10)))/(j/10));
+        j = j*100;
+    }
+    return soma;
+}
+long potencia(long valor, int exp){
+    long temp = valor;
+    for(int i = 0; i<exp-1 ;i++){
+        valor = temp * valor;
+    }
+    return valor;
+}
